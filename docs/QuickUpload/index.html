@@ -23,10 +23,16 @@
 <div class="container">
   <div class="page-header">
     <h1><small><a href="https://img9.top/" target="_blank">Quick Upload</a></small></h1>
-    <div id="status">Node status: offline</div>
-    <div>[说明] 无任何限制, 图片存储在去中心化网络中, 任何人都可以访问, 无法删除, 请谨慎上传隐私照片。
+    <div  id="status">Node status: offline （初始化中）</div>
+	  
+    <div>
+	[注意]<font color='red'> 切勿上传隐私内容</font>
+	<br>
+	[说明] 无任何限制, 图片存储在<a href='https://ipfs.io' target='_blank'>去中心化网络</a>中
     <br>
-      [提示] 不支持移动浏览器,请使用桌面版Chrome或者Firefox访问
+      [提示] 请使用桌面版 Chrome 或者 Firefox 访问
+	<br>
+	  
     </div>
   </div>
 
@@ -55,6 +61,7 @@
 
   <div class="demo-footer">
     <p>上传后大约需要20秒同步到<a href="./public-gateway-checker/" target="blank">全球网络</a>，如果图片打不开，请耐心等待一下 @<a href="https://github.com/onplus" target="blank">onplus</a></p>
+
   </div>
 </div>
 
@@ -94,7 +101,7 @@
 						  if (err || !res) {
 							return console.error('Error - ipfs files add', err, res)
 						  }
-						  res.forEach((file) => upload_result(file.hash,upFileSuffix))
+						  res.forEach((file) => upload_result(file.hash,upFileSuffix,upFileName))
 						})
 					}else{
 						alert('\u8fd8\u6ca1\u51c6\u5907\u597d,\u8bf7\u7a0d\u5019\u518d\u8bd5');
@@ -104,9 +111,9 @@
 			}
 		},false);
 		
-		function upload_result(fileHash,fileSuffix) {
+		function upload_result(fileHash,fileSuffix,upFileName) {
             //var server = Math.floor(Math.random() * 5);
-            var picurl = 'http://ipfs.io/ipfs/' + fileHash + '?' + '.' + fileSuffix;
+            var picurl = 'http://ipfs.io/ipfs/' + fileHash + '?' + upFileName;
             $('#up_result').append(picurl + "\n");
             if (fileSuffix == 'jpg' || fileSuffix == 'jpeg' || fileSuffix == 'png' || fileSuffix == 'gif') {
                 getimg(picurl);
