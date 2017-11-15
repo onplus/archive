@@ -113,7 +113,7 @@
 		
 		function upload_result(fileHash,fileSuffix,upFileName) {
             //var server = Math.floor(Math.random() * 5);
-            var picurl = 'http://ipfs.io/ipfs/' + fileHash + '?' + upFileName;
+            var picurl = 'https://ipfs.io/ipfs/' + fileHash + '?' + upFileName;
             $('#up_result').append(picurl + "\n");
             if (fileSuffix == 'jpg' || fileSuffix == 'jpeg' || fileSuffix == 'png' || fileSuffix == 'gif') {
                 getimg(picurl);
