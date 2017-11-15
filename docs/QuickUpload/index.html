@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<!-- saved from url=(0017)https://img9.top/ -->
+<!--from https://www.v2ex.com/member/cnwtex
+     upload by https://github.com/onplus -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quick Upload</title>
+
+  <!-- Bootstrap -->
+  <link href="upload_files/bootstrap.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="upload_files/uploader.css">
+  <link rel="stylesheet" href="upload_files/demo.css">
+  <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABfElEQVQ4jX3TvWoUQBQF4G93RRNBDWIjKYIiFlZKNFgpBiwsLHwNQS0FLQKKhnQqqA8QiCKyqIVioZL4BAbiG4QQ8HfdiFGyY7EnZiLowOXOnDnn3jt3ZuiPho1xHPfwHl9jC7iLsYpXa8AgptBF+Yd1MImBWtjAdjytiC8wgVWs4CpeVvvtJPxTxVQ2VnAh2F78yBF2B7uE7+HeWBcfC9jD+aqyQ6mggwMVfjEBujgC9wO8Tkmt+INVBSPBmrG5aG43cTKLB/GtyrewJVbiexX3lGQoOFE1ZReeh9zDM+yomj4ezUf4ksV4CEMRF6zFSoLsDOd0An9oYjGEfdiGRzgTQolfw1k8xFbsT6BF+q+uYBZPMv+MK/iWMi9XR23jbea3YNTG3RYsJdswfua69uAcliteF4dTicmAvzAdbFj/GjsJADPhFFxbFzf033a7OvOrEFaTaQJvqr48Tr82fagB3My5//eZrke8adSRjuIO5vEpTXyXho3+LfwNrPyIYCQoUHkAAAAASUVORK5CYII="/>
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+<style></style></head>
+<body role="document" style="font-family: 微软雅黑, &quot;Microsoft Yahei&quot;;">
+
+<div class="container">
+  <div class="page-header">
+    <h1><small><a href="https://img9.top/" target="_blank">Quick Upload</a></small></h1>
+    <div id="status">Node status: offline</div>
+    <div>[说明] 无任何限制, 图片存储在去中心化网络中, 任何人都可以访问, 无法删除, 请谨慎上传隐私照片。
+    <br>
+      [提示] 不支持移动浏览器,请使用桌面版Chrome或者Firefox访问
+    </div>
+  </div>
+
+  <div class="row demo-columns">
+    <div class="col-md-12">
+      <!-- D&D Zone-->
+      <div id="drag-and-drop-zone" class="uploader">
+        <div>请拖拽图片到这里</div>
+        <div class="or">- or -</div>
+        <div class="browser">
+          <label>
+            <span style="font-size:16px;font-weight: normal;">点击选择文件</span>
+            <input type="file" id="getfileinput" title="点击选择文件">
+          </label>
+        </div>
+      </div>
+      <!-- /D&D Zone -->
+    </div>
+    <div class="col-md-12">
+      <textarea rows="5" id="up_result" style="width:100%;"></textarea>
+    </div>
+  </div>
+
+  <div class="row" id="other_img">
+  </div>
+
+  <div class="demo-footer">
+    <p>上传后大约需要20秒同步到<a href="./public-gateway-checker/" target="blank">全球网络</a>，如果图片打不开，请耐心等待一下 @<a href="https://github.com/onplus" target="blank">onplus</a></p>
+  </div>
+</div>
+
+<script src="upload_files/jquery-1.10.1.min.js"></script>
+<script src="upload_files/bootstrap.min.js"></script>
+<script src="upload_files/index.min.js"></script>
+
+<script type="text/javascript">
+		const repoPath = 'ipfs-' + Math.random()
+		const node = new Ipfs({
+		  init: false,
+		  start: false,
+		  repo: repoPath
+		})
+		node.init(handleInit)
+		function handleInit (err) {
+		  if (err) {
+			throw err
+		  }
+		  node.start(() => {
+			console.log('Online status: ', node.isOnline() ? 'online' : 'offline')
+			document.getElementById("status").innerHTML= 'Node status: ' + (node.isOnline() ? 'online' : 'offline')
+		  })
+		}
+		// \u52a0\u8f7d\u6587\u4ef6
+		document.querySelector('#getfileinput').addEventListener('change',function(){
+			var that = this,filereader;
+			var upFileName = that.files[0].name;
+			var index1 = upFileName.lastIndexOf(".");
+			var index2 = upFileName.length;
+			var upFileSuffix = upFileName.substring(index1+1,index2);
+			if(that.files.length>0){
+				filereader = new FileReader();
+				filereader.onload = function(e){
+					if(node.isOnline()){
+						node.files.add(new node.types.Buffer(this.result), (err, res) => {
+						  if (err || !res) {
+							return console.error('Error - ipfs files add', err, res)
+						  }
+						  res.forEach((file) => upload_result(file.hash,upFileSuffix))
+						})
+					}else{
+						alert('\u8fd8\u6ca1\u51c6\u5907\u597d,\u8bf7\u7a0d\u5019\u518d\u8bd5');
+					}
+				};
+				filereader.readAsArrayBuffer(that.files[0]);
+			}
+		},false);
+		
+		function upload_result(fileHash,fileSuffix) {
+            //var server = Math.floor(Math.random() * 5);
+            var picurl = 'http://ipfs.io/ipfs/' + fileHash + '?' + '.' + fileSuffix;
+            $('#up_result').append(picurl + "\n");
+            if (fileSuffix == 'jpg' || fileSuffix == 'jpeg' || fileSuffix == 'png' || fileSuffix == 'gif') {
+                getimg(picurl);
+            }
+		}
+
+		function getimg(picurl) {
+		    var thediv = $('<div class="col-md-2"></div>');
+		    var thelink = $('<a target="_blank"></a>');
+		    var img = new Image();
+		    img.src = picurl;
+		    img.className = 'img-thumbnail';
+            img.addEventListener("load",function(){
+                publish(picurl);
+            },false);
+            thelink.append(img);
+            thediv.append(thelink);
+            $('#other_img').prepend(thediv);
+        }
+
+		function publish(picurl) {
+            $.get('/main/publish?picurl='+picurl, function(result){
+                console.log(result);
+            });
+        }
+
+</script>
+
+
+</body></html>
